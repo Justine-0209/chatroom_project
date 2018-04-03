@@ -1,131 +1,44 @@
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-<!------ Include the above in your HEAD tag ---------->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" href="stylesheet.css">
+	<!-- Compiled and minified CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+	<!-- Compiled and minified JavaScript -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Chatroom</title>
+</head>
 
-<div class="container text-center">
-	<div class="row">
-		<h2>Open in chat (popup-box chat-popup)</h2>
-        <h4>Click Here</h4>
-        <div class="round hollow text-center">
-        <a href="#" id="addClass"><span class="glyphicon glyphicon-comment"></span> Open in chat </a>
-        </div>
-        
-        <hr>
-        
-        MORE :
-        <a target="_blank" href="http://bootsnipp.com/snippets/33ejn">Whatsapp Chat Box POPUP</a>,
-         <a target="_blank" href="http://bootsnipp.com/snippets/z4P39"> Creative User Profile  </a>
-         
+
+<body>
+	<header>
+		<img src="images/LOGO.png" id="logo">
+	</header>
+	
+	<div class="homepage-conteneur"></div>
+		<img src="images/home_illo.fr-FR.png" id="img-homepage">
+		<div class="homepage">
+			<h1>Titre de la page</h1>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ultrices venenatis justo, id ornare eros volutpat eu. Phasellus dictum
+				porttitor eros, quis scelerisque massa condimentum id. Sed maximus sapien ut nibh ornare feugiat. Nunc ut dolor neque. Cras egestas,
+					tellus vel dignissim pretium, eros urna aliquam orci, vel efficitur dolor eros eu velit. Pellentesque mattis tellus eget maximus volutpat. Vivamus id quam non magna commodo fermentum. Fusce mattis sapien quis lacus malesuada congue. Integer et lacus gravida, mattis libero sed, euismod mauris.</p>
+			<div class="buttons-homepage">
+					<a class="waves-effect waves-light btn">Sign in</a>
+					<a class="waves-effect waves-light btn">Log in</a>
+			</div>
+					<a href="/">Mot de passe oublié ?</a>
+		</div>
 	</div>
-</div>
 
-
-<div class="popup-box chat-popup" id="qnimate">
-    		  <div class="popup-head">
-				<div class="popup-head-left pull-left"><img src="http://bootsnipp.com/img/avatars/bcf1c0d13e5500875fdd5a7e8ad9752ee16e7462.jpg" alt="iamgurdeeposahan"> Gurdeep Osahan</div>
-					  <div class="popup-head-right pull-right">
-						<div class="btn-group">
-    								  <button class="chat-header-button" data-toggle="dropdown" type="button" aria-expanded="false">
-									   <i class="glyphicon glyphicon-cog"></i> </button>
-									  <ul role="menu" class="dropdown-menu pull-right">
-										<li><a href="#">Media</a></li>
-										<li><a href="#">Block</a></li>
-										<li><a href="#">Clear Chat</a></li>
-										<li><a href="#">Email Chat</a></li>
-									  </ul>
-						</div>
-						
-						<button data-widget="remove" id="removeClass" class="chat-header-button pull-right" type="button"><i class="glyphicon glyphicon-off"></i></button>
-                      </div>
-			  </div>
-			<div class="popup-messages">
-    		
-			
-			
-			
-			<div class="direct-chat-messages">
-                    
-					
-					<div class="chat-box-single-line">
-								<abbr class="timestamp">October 8th, 2015</abbr>
-					</div>
-					
-					
-					<!-- Message. Default to the left -->
-                    <div class="direct-chat-msg doted-border">
-                      <div class="direct-chat-info clearfix">
-                        <span class="direct-chat-name pull-left">Osahan</span>
-                      </div>
-                      <!-- /.direct-chat-info -->
-                      <img alt="message user image" src="http://bootsnipp.com/img/avatars/bcf1c0d13e5500875fdd5a7e8ad9752ee16e7462.jpg" class="direct-chat-img"><!-- /.direct-chat-img -->
-                      <div class="direct-chat-text">
-                        Hey bro, how’s everything going ?
-                      </div>
-					  <div class="direct-chat-info clearfix">
-                        <span class="direct-chat-timestamp pull-right">3.36 PM</span>
-                      </div>
-						<div class="direct-chat-info clearfix">
-						<span class="direct-chat-img-reply-small pull-left">
-							
-						</span>
-						<span class="direct-chat-reply-name">Singh</span>
-						</div>
-                      <!-- /.direct-chat-text -->
-                    </div>
-                    <!-- /.direct-chat-msg -->
-					
-					
-					<div class="chat-box-single-line">
-						<abbr class="timestamp">October 9th, 2015</abbr>
-					</div>
-			
-					
-					
-					<!-- Message. Default to the left -->
-                    <div class="direct-chat-msg doted-border">
-                      <div class="direct-chat-info clearfix">
-                        <span class="direct-chat-name pull-left">Osahan</span>
-                      </div>
-                      <!-- /.direct-chat-info -->
-                      <img alt="iamgurdeeposahan" src="http://bootsnipp.com/img/avatars/bcf1c0d13e5500875fdd5a7e8ad9752ee16e7462.jpg" class="direct-chat-img"><!-- /.direct-chat-img -->
-                      <div class="direct-chat-text">
-                        Hey bro, how’s everything going ?
-                      </div>
-					  <div class="direct-chat-info clearfix">
-                        <span class="direct-chat-timestamp pull-right">3.36 PM</span>
-                      </div>
-						<div class="direct-chat-info clearfix">
-						  <img alt="iamgurdeeposahan" src="http://bootsnipp.com/img/avatars/bcf1c0d13e5500875fdd5a7e8ad9752ee16e7462.jpg" class="direct-chat-img big-round">
-						<span class="direct-chat-reply-name">Singh</span>
-						</div>
-                      <!-- /.direct-chat-text -->
-                    </div>
-                    <!-- /.direct-chat-msg -->
-					
-					
-                    
-
-                    
-
-                  </div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
+	<footer class="page-footer">
+			<div class="container">
+			© 2018 Copyright BENGAZBÉNÉ
+			<a class="grey-text text-lighten-4 right" href="#!">More Links</a>
 			</div>
-			<div class="popup-messages-footer">
-			<textarea id="status_message" placeholder="Type a message..." rows="10" cols="40" name="message"></textarea>
-			<div class="btn-footer">
-			<button class="bg_none"><i class="glyphicon glyphicon-film"></i> </button>
-			<button class="bg_none"><i class="glyphicon glyphicon-camera"></i> </button>
-            <button class="bg_none"><i class="glyphicon glyphicon-paperclip"></i> </button>
-			<button class="bg_none pull-right"><i class="glyphicon glyphicon-thumbs-up"></i> </button>
-			</div>
-			</div>
-	  </div>
+	</footer>
+				
+</body>
+</html>
