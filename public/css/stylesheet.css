@@ -6,6 +6,11 @@
     display: block;
 }
 
+.brand-logo img{
+    width: 150px;
+    display: block;
+}
+
 .homepage-conteneur{
     display: flex;
     justify-content: space-around;
