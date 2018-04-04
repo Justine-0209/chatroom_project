@@ -1,12 +1,11 @@
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
-  host     : 'localhost:8889',
+  host     : 'localhost',
+  port : '8889',
   user     : 'root',
   password : 'root',
   database : 'chatroom'
 });
-
-
 
 const express = require('express')
 const app = express()
@@ -23,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 
 app.post('/signup', function(req, res) {
-    var firstname = req.body.firstrname;
+    var firstname = req.body.firstname;
     var lastname = req.body.lastname;
     var pseudo = req.body.pseudo;
     var password = req.body.password;
@@ -58,18 +57,7 @@ app.post('/signup', function(req, res) {
         error = "Please enter your email"
     }
 
-// =====================================
-// connection to the database
 
-    connection.connect();
-
-    connection.query('INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, ?, NOW())',
-    [firstname, lastname, pseudo, password, email, NULL],
-        function (error, results, fields) {
-
-    });
-
-    connection.end();
 
 // =====================================
 // matching passwords
@@ -78,8 +66,30 @@ if (confirm_password != password){
     error = "Your passwords don't match"
 }
 
+if (error == ""){
+        // =====================================
+        // connection to the database
 
-    res.send('<h1>Hello</h1> '+firstname);
+        connection.connect();
+
+        connection.query('INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, NULL, NOW())',
+        [firstname, lastname, pseudo, password, email],
+            function (error, results, fields) {
+                if(error){
+                    throw error;
+                }
+                connection.end();
+                res.redirect("/");
+            });
+        
+}
+else{
+    res.render('signup.ejs', {
+        error:error
+    });
+}
+    
+
 });
 
 
@@ -116,7 +126,9 @@ http.listen(3000, function(){
     app.get('/signup', function(req, res) {
 
         // render the page and pass in any flash data if it exists
-        res.render('signup.ejs');
+        res.render('signup.ejs', {
+            error:""
+        });
     });
 
     // process the signup form
