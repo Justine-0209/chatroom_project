@@ -1,9 +1,93 @@
+var mysql      = require('mysql');
+var connection = mysql.createConnection({
+  host     : 'localhost:8889',
+  user     : 'root',
+  password : 'root',
+  database : 'chatroom'
+});
+
+
+
 const express = require('express')
 const app = express()
 app.use(express.static('public'));
-app.listen(3000, () => console.log('Example app listening on port 3000!'))
+
+// =====================================
+
+var http = require('http').Server(app);
+var bodyParser = require('body-parser');
+
+// Add this line below
+app.use(bodyParser.urlencoded({ extended: false })) 
+
+app.use(bodyParser.json());
+
+app.post('/signup', function(req, res) {
+    var firstname = req.body.firstrname;
+    var lastname = req.body.lastname;
+    var pseudo = req.body.pseudo;
+    var password = req.body.password;
+    var confirm_password = req.body.confirm_password;
+    var email = req.body.email;
+    var error = ""
+
+// =====================================
+// if empty fields
+
+    if (firstname == ""){
+        error = "Please enter your firstname"
+    }
+
+    if (lastname == ""){
+        error = "Please enter your lastname"
+    }
+
+    if (pseudo == ""){
+        error = "Please enter your pseudo"
+    }
+
+    if (password == ""){
+        error = "Please enter your password"
+    }
+
+    if (confirm_password == ""){
+        error = "Please confirm your password"
+    }
+
+    if (email == ""){
+        error = "Please enter your email"
+    }
+
+// =====================================
+// connection to the database
+
+    connection.connect();
+
+    connection.query('INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, ?, NOW())',
+    [firstname, lastname, pseudo, password, email, NULL],
+        function (error, results, fields) {
+
+    });
+
+    connection.end();
+
+// =====================================
+// matching passwords
+
+if (confirm_password != password){
+    error = "Your passwords don't match"
+}
 
 
+    res.send('<h1>Hello</h1> '+firstname);
+});
+
+
+
+
+http.listen(3000, function(){
+  console.log('listening on *:3000');
+});
 
     // =====================================
     // HOME PAGE (with login links) ========
