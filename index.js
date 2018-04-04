@@ -7,6 +7,8 @@ var connection = mysql.createConnection({
   database : 'chatroom'
 });
 
+connection.connect();
+
 const express = require('express')
 const app = express()
 app.use(express.static('public'));
@@ -69,7 +71,6 @@ app.post('/signup', function(req, res) {
     if (error == ""){
         // =====================================
         // connection to the database
-            connection.connect();
 
             connection.query('INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, NULL, NOW())',
             [firstname, lastname, pseudo, password, email],
@@ -77,7 +78,6 @@ app.post('/signup', function(req, res) {
                     if(error){
                         throw error;
                     }
-                    connection.end();
                     res.redirect("/");
                 });      
     }
@@ -107,7 +107,7 @@ app.post('/login', function(req, res) {
     if (error == ""){
         // =====================================
         // connection to the database
-            connection.connect();
+            
 
             connection.query('SELECT * FROM user WHERE pseudo=? and password=?',
             [pseudo, password],
@@ -117,7 +117,6 @@ app.post('/login', function(req, res) {
                     }
                     if (error) {
                         throw error;}
-                    connection.end();
                     res.redirect("/");
                 });      
     }
