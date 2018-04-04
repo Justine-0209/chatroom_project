@@ -63,7 +63,11 @@
 }
 
 /* SINGUP */
-.form_login_signup{
+.form_login{
+    width: 30%;
+}
+
+.form_signup{
     width: 50%;
 }
 

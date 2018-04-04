@@ -30,8 +30,8 @@ app.post('/signup', function(req, res) {
     var email = req.body.email;
     var error = ""
 
-// =====================================
-// if empty fields
+    // =====================================
+    // if empty fields
 
     if (firstname == ""){
         error = "Please enter your firstname"
@@ -59,37 +59,73 @@ app.post('/signup', function(req, res) {
 
 
 
-// =====================================
-// matching passwords
+    // =====================================
+    // matching passwords
 
-if (confirm_password != password){
-    error = "Your passwords don't match"
-}
+    if (confirm_password != password){
+        error = "Your passwords don't match"
+    }
 
-if (error == ""){
+    if (error == ""){
         // =====================================
         // connection to the database
+            connection.connect();
 
-        connection.connect();
+            connection.query('INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, NULL, NOW())',
+            [firstname, lastname, pseudo, password, email],
+                function (error, results, fields) {
+                    if(error){
+                        throw error;
+                    }
+                    connection.end();
+                    res.redirect("/");
+                });      
+    }
+    else{
+        res.render('signup.ejs', {
+            error:error
+        });
+    }
+});
 
-        connection.query('INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, NULL, NOW())',
-        [firstname, lastname, pseudo, password, email],
-            function (error, results, fields) {
-                if(error){
-                    throw error;
-                }
-                connection.end();
-                res.redirect("/");
-            });
-        
-}
-else{
-    res.render('signup.ejs', {
-        error:error
-    });
-}
-    
+app.post('/login', function(req, res) {
+    var pseudo = req.body.pseudo;
+    var password = req.body.password;
+    var error = ""
 
+
+    // =====================================
+    // if empty fields
+    if (pseudo == ""){
+        error = "Please enter your pseudo"
+    }
+
+    if (password == ""){
+        error = "Please enter your password"
+    }
+
+    if (error == ""){
+        // =====================================
+        // connection to the database
+            connection.connect();
+
+            connection.query('SELECT * FROM user WHERE pseudo=? and password=?',
+            [pseudo, password],
+                function (error, results, fields) {
+                    if (results){
+                       console.log("Connected!");
+                    }
+                    if (error) {
+                        throw error;}
+                    connection.end();
+                    res.redirect("/");
+                });      
+    }
+    else{
+        res.render('login.ejs', {
+            error:error
+        });
+    }
 });
 
 
@@ -113,7 +149,9 @@ http.listen(3000, function(){
     app.get('/login', function(req, res) {
 
         // render the page and pass in any flash data if it exists
-        res.render('login.ejs'); 
+        res.render('login.ejs', {
+            error:""
+        });
     });
 
     // process the login form
