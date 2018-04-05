@@ -20,6 +20,7 @@ var session = require('express-session')({
     saveUninitialized: false, 
     resave: false}
 );
+app.use(session);
 
 // Socket.io
 var http = require('http').Server(app);
@@ -139,7 +140,7 @@ app.post('/login', function(req, res) {
                 function (err, results, fields) {
                     if (results.length>0){
                        console.log("Connected!");
-                       app.use(session);
+                       req.session.user=results[0];
                        res.redirect("/all-chatrooms");
                     }
                     else{
@@ -171,14 +172,6 @@ http.listen(3000, function(){
     // =====================================
     app.get('/', function(req, res) {
         res.render('index.ejs'); // load the index.ejs file
-        {
-            io.on('connection', function(socket){
-                console.log('a user connected');
-                socket.on('disconnect', function(){
-                  console.log('user disconnected');
-                });
-              });
-        }
     });
 
     // =====================================
@@ -228,7 +221,8 @@ http.listen(3000, function(){
     // LOGOUT ==============================
     // =====================================
     app.get('/logout', function(req, res) {
-        req.logout();
+        req.session.user=null;
+        console.log('Disconnected');
         res.redirect('/');
     });
 
@@ -249,6 +243,7 @@ http.listen(3000, function(){
     // show all the chatrooms
     app.get('/chatroom', function(req, res) {
         // render the page and pass in any flash data if it exists
+        console.log(req.session.user.firstname)
         res.render('chatroom.ejs', {
             connect:"Log out"
         });
