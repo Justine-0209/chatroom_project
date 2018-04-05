@@ -23,6 +23,29 @@ var session = require('express-session')({
 
 // Socket.io
 var http = require('http').Server(app);
+var io = require('socket.io')(http);
+io.use(function(socket, next) {
+    session(socket.request, socket.request.res, next);
+});
+io.on("connection", function(socket){
+    console.log("nouvelle connexion au serveur de WS!");
+
+    //envoie un message de type "welcome" à la personne qui vient de connecter 
+    //aucune donnée n'est passée en plus
+    socket.emit("welcome");
+
+    //quand on reçoit un message de type "chat_message"...
+    socket.on("chat_message", function(data){
+        //accède aux éventuelles données de session
+        console.log(socket.request.session);
+
+        //on devrait sauvegarder en bdd
+
+        //on rebalance ce message à tout le monde
+        io.emit("chat_message", data);
+    })
+
+})
 
 // Bodyparser - For Forms
 var bodyParser = require('body-parser');
@@ -82,7 +105,7 @@ app.post('/signup', function(req, res) {
                     if(err){
                         throw err;
                     }
-                    res.redirect("/");
+                    res.redirect("/all-chatrooms");
                 });      
     }
     else{
@@ -117,7 +140,7 @@ app.post('/login', function(req, res) {
                     if (results.length>0){
                        console.log("Connected!");
                        app.use(session);
-                       res.redirect("/");
+                       res.redirect("/all-chatrooms");
                     }
                     else{
                         res.render('login.ejs', {
@@ -148,6 +171,14 @@ http.listen(3000, function(){
     // =====================================
     app.get('/', function(req, res) {
         res.render('index.ejs'); // load the index.ejs file
+        {
+            io.on('connection', function(socket){
+                console.log('a user connected');
+                socket.on('disconnect', function(){
+                  console.log('user disconnected');
+                });
+              });
+        }
     });
 
     // =====================================
@@ -199,6 +230,28 @@ http.listen(3000, function(){
     app.get('/logout', function(req, res) {
         req.logout();
         res.redirect('/');
+    });
+
+    // =====================================
+    // ALL CHATROOMS =======================
+    // =====================================
+    // show all the chatrooms
+    app.get('/all-chatrooms', function(req, res) {
+        // render the page and pass in any flash data if it exists
+        res.render('all-chatrooms.ejs', {
+            connect:"Log out"
+        });
+    });
+
+    // =====================================
+    // CHATROOMS ===========================
+    // =====================================
+    // show all the chatrooms
+    app.get('/chatroom', function(req, res) {
+        // render the page and pass in any flash data if it exists
+        res.render('chatroom.ejs', {
+            connect:"Log out"
+        });
     });
 
 // route middleware to make sure a user is logged in
