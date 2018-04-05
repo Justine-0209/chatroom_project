@@ -45,10 +45,6 @@
             // Connexion à socket.io
             var socket = io();
 
-            socket.on('welcome', function(){
-                alert("Bienvenue !");
-            })
-
             socket.on('chat_message', function (data) {
                 insereMessage(data.pseudo, data.message)
             });

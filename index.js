@@ -34,10 +34,6 @@ io.use(function(socket, next) {
 io.on("connection", function(socket){
     console.log("nouvelle connexion au serveur de WS!");
 
-    //envoie un message de type "welcome" à la personne qui vient de connecter 
-    //aucune donnée n'est passée en plus
-    socket.emit("welcome");
-
     socket.on('chat_message', function (data) {
         console.log(socket.request.session);
         message = ent.encode(data);
