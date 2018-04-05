@@ -26,9 +26,11 @@ app.use(session);
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 ent = require('ent'), // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
+
 io.use(function(socket, next) {
     session(socket.request, socket.request.res, next);
 });
+
 io.on("connection", function(socket){
     console.log("nouvelle connexion au serveur de WS!");
 
@@ -37,15 +39,19 @@ io.on("connection", function(socket){
     socket.emit("welcome");
 
     // Dès qu'on reçoit un message, on récupère le pseudo de son auteur et on le transmet aux autres personnes
-    socket.on('message', function (message) {
+    //socket.on('message', function (message) {
         //accède aux éventuelles données de session
-        console.log(socket.request.session);
-        message = ent.encode(message);
-        socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
+       // console.log(socket.request.session);
+       // message = ent.encode(message);
+        //socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
         //on rebalance ce message à tout le monde
-        io.emit("chat_message", data);
-    });
+    //});
 
+    socket.on('chat_message', function (data) {
+        console.log(socket.request.session);
+        message = ent.encode(data);
+        io.emit("chat_message", {message: message, pseudo: socket.request.session.user.pseudo});
+    });
 })
 
 
@@ -249,6 +255,7 @@ http.listen(3000, function(){
         res.render('chatroom.ejs', {
             connect:"Log out",
             pseudo:req.session.user.pseudo,
+            message:req.session.user.message_content,
         });
     });
 
