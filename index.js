@@ -38,7 +38,6 @@ app.post('/signup', function(req, res) {
     var confirm_password = req.body.confirm_password;
     var email = req.body.email;
     var error = ""
-    var connect = ""
 
     // =====================================
     // if empty fields
@@ -77,7 +76,6 @@ app.post('/signup', function(req, res) {
     if (error == ""){
         // =====================================
         // connection to the database
-            connect:"";
             connection.query('INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, NULL, NOW())',
             [firstname, lastname, pseudo, password, email],
                 function (err, results, fields) {
@@ -99,7 +97,6 @@ app.post('/login', function(req, res) {
     var pseudo = req.body.pseudo;
     var password = req.body.password;
     var error = ""
-    var connect = ""
 
     // =====================================
     // if empty fields
@@ -121,7 +118,6 @@ app.post('/login', function(req, res) {
                        console.log("Connected!");
                        app.use(session);
                        res.redirect("/");
-                       connect:"";
                     }
                     else{
                         res.render('login.ejs', {
