@@ -1,3 +1,4 @@
+// connection to BDD
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
   host     : 'localhost',
@@ -6,23 +7,22 @@ var connection = mysql.createConnection({
   password : 'root',
   database : 'chatroom'
 });
-
 connection.connect();
 
+// Express
 const express = require('express')
 const app = express()
 app.use(express.static('public'));
 
-// =====================================
-
+// Socket.io
 var http = require('http').Server(app);
+
+// Bodyparser - For Forms
 var bodyParser = require('body-parser');
-
-// Add this line below
 app.use(bodyParser.urlencoded({ extended: false })) 
-
 app.use(bodyParser.json());
 
+// signup page
 app.post('/signup', function(req, res) {
     var firstname = req.body.firstname;
     var lastname = req.body.lastname;
@@ -59,8 +59,6 @@ app.post('/signup', function(req, res) {
         error = "Please enter your email"
     }
 
-
-
     // =====================================
     // matching passwords
 
@@ -74,9 +72,9 @@ app.post('/signup', function(req, res) {
 
             connection.query('INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, NULL, NOW())',
             [firstname, lastname, pseudo, password, email],
-                function (error, results, fields) {
-                    if(error){
-                        throw error;
+                function (err, results, fields) {
+                    if(err){
+                        throw err;
                     }
                     res.redirect("/");
                 });      
@@ -88,11 +86,11 @@ app.post('/signup', function(req, res) {
     }
 });
 
+// login page
 app.post('/login', function(req, res) {
     var pseudo = req.body.pseudo;
     var password = req.body.password;
     var error = ""
-
 
     // =====================================
     // if empty fields
@@ -107,17 +105,23 @@ app.post('/login', function(req, res) {
     if (error == ""){
         // =====================================
         // connection to the database
-            
-
+        console.log (pseudo, password);
             connection.query('SELECT * FROM user WHERE pseudo=? and password=?',
             [pseudo, password],
-                function (error, results, fields) {
-                    if (results){
+                function (err, results, fields) {
+                    console.log (results);
+                    if (results.length>0){
                        console.log("Connected!");
+                       res.redirect("/");
                     }
-                    if (error) {
-                        throw error;}
-                    res.redirect("/");
+                    else{
+                        res.render('login.ejs', {
+                            error:"wrong password or pseudo"
+                        });
+                    }
+                    if (err) {
+                        throw err;}
+                    
                 });      
     }
     else{
