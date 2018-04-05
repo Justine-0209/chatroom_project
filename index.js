@@ -14,6 +14,13 @@ const express = require('express')
 const app = express()
 app.use(express.static('public'));
 
+// Sessions
+var session = require('express-session')({
+    secret: "dsafjiqewfjewof", 
+    saveUninitialized: false, 
+    resave: false}
+);
+
 // Socket.io
 var http = require('http').Server(app);
 
@@ -31,6 +38,7 @@ app.post('/signup', function(req, res) {
     var confirm_password = req.body.confirm_password;
     var email = req.body.email;
     var error = ""
+    var connect = ""
 
     // =====================================
     // if empty fields
@@ -69,7 +77,7 @@ app.post('/signup', function(req, res) {
     if (error == ""){
         // =====================================
         // connection to the database
-
+            connect:"";
             connection.query('INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, NULL, NOW())',
             [firstname, lastname, pseudo, password, email],
                 function (err, results, fields) {
@@ -91,6 +99,7 @@ app.post('/login', function(req, res) {
     var pseudo = req.body.pseudo;
     var password = req.body.password;
     var error = ""
+    var connect = ""
 
     // =====================================
     // if empty fields
@@ -105,14 +114,14 @@ app.post('/login', function(req, res) {
     if (error == ""){
         // =====================================
         // connection to the database
-        console.log (pseudo, password);
             connection.query('SELECT * FROM user WHERE pseudo=? and password=?',
             [pseudo, password],
                 function (err, results, fields) {
-                    console.log (results);
                     if (results.length>0){
                        console.log("Connected!");
+                       app.use(session);
                        res.redirect("/");
+                       connect:"";
                     }
                     else{
                         res.render('login.ejs', {
@@ -153,7 +162,8 @@ http.listen(3000, function(){
 
         // render the page and pass in any flash data if it exists
         res.render('login.ejs', {
-            error:""
+            error:"",
+            connect:""
         });
     });
 
@@ -168,7 +178,8 @@ http.listen(3000, function(){
 
         // render the page and pass in any flash data if it exists
         res.render('signup.ejs', {
-            error:""
+            error:"",
+            connect:""
         });
     });
 
