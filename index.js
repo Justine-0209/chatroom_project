@@ -39,7 +39,6 @@ io.on("connection", function(socket){
         message = ent.encode(data);
         var user_id = socket.request.session.user.user_id;
         var message_content = message;
-        //var chatroom_id = socket.request.session.user.chatroom_id;
         connection.query('INSERT INTO message VALUES (NULL, ?, ?, NOW(), NULL )',
             [user_id, message_content],
                 function (err, results, fields) {
@@ -165,6 +164,39 @@ app.post('/login', function(req, res) {
     }
 });
 
+// create chatroom page
+app.post('/create-chatroom', function(req, res) {
+    var chatroom_title = req.body.chatroom_title;
+    var pseudo = req.body.guest;
+    var master_user_id= req.session.user.user_id;
+    var error = ""
+
+    if (chatroom_title == ""){
+        error = "Please enter a title for your chatroom"
+    }
+
+    if (pseudo == ""){
+        error = "Please enter a guest pseudo"
+    }
+
+    if (error == ""){
+        // =====================================
+        // connection to the database
+            connection.query('INSERT INTO chatroom VALUES (NULL, ?, NOW(), ?)',
+            [chatroom_title, master_user_id],
+                function (err, results, fields) {
+                    if(err){
+                        throw err;
+                    }
+                    res.redirect("/chatroom?id=" + results.insertId);
+                });   
+    }
+    else{
+        res.render('create-chatroom.ejs', {
+            error:error
+        });
+    }
+});
 
 
 
@@ -239,6 +271,18 @@ http.listen(3000, function(){
         // render the page and pass in any flash data if it exists
         res.render('all-chatrooms.ejs', {
             connect:"Log out"
+        });
+    });
+
+    // =====================================
+    // CREATE CHATROOMS ====================
+    // =====================================
+    // show all the chatrooms
+    app.get('/create-chatroom', function(req, res) {
+        res.render('create-chatroom.ejs', {
+            connect:"Log out",
+            pseudo:req.session.user.pseudo,
+            message:req.session.user.message_content,
         });
     });
 

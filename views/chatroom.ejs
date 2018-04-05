@@ -16,23 +16,27 @@
             <section id="zone_chat">
 
             </section>
-            <form action="" method="POST" id="chat_form">
-                <div class="row">
-                    <div class="col s9">
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <input type="text" id="message" name="message">
-                                <label for="message">Your message here</label>
+            <div  id="chat_form">
+                <form action="" method="POST">
+                    <div class="row">
+                        <div class="col s9">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <i class="material-icons prefix">textsms</i>
+                                    <input type="text" id="message" name="message">
+                                    <label for="message">Your message here</label>
+                                </div>
                             </div>
                         </div>
+                        <div class="col s3"></div>
+                            <button class="btn waves-effect waves-light" type="submit" id="send_message">
+                                    Send
+                                    <i class="material-icons right">send</i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="col s3"></div>
-                        <button class="btn waves-effect waves-light" type="submit" id="send_message">
-                                Send
-                        </button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </main>
     
         <footer class="page-footer">

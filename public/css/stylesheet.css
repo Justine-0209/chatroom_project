@@ -87,3 +87,20 @@ h1{
         width: 100%;
     }
 }
+
+/* CREATE CHATROOM */
+#create_chatroom{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin : 50px;
+}
+
+#form_create_chatroom{
+    text-align: center;
+    width: 50%;
+}
+
+#form_create_chatroom button{
+    margin: 20px;
+}
