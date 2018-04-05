@@ -38,18 +38,19 @@ io.on("connection", function(socket){
     //aucune donnée n'est passée en plus
     socket.emit("welcome");
 
-    // Dès qu'on reçoit un message, on récupère le pseudo de son auteur et on le transmet aux autres personnes
-    //socket.on('message', function (message) {
-        //accède aux éventuelles données de session
-       // console.log(socket.request.session);
-       // message = ent.encode(message);
-        //socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
-        //on rebalance ce message à tout le monde
-    //});
-
     socket.on('chat_message', function (data) {
         console.log(socket.request.session);
         message = ent.encode(data);
+        var user_id = socket.request.session.user.user_id;
+        var message_content = message;
+        //var chatroom_id = socket.request.session.user.chatroom_id;
+        connection.query('INSERT INTO message VALUES (NULL, ?, ?, NOW(), NULL )',
+            [user_id, message_content],
+                function (err, results, fields) {
+                    if(err){
+                        throw err;
+                    }
+                });
         io.emit("chat_message", {message: message, pseudo: socket.request.session.user.pseudo});
     });
 })
@@ -252,6 +253,8 @@ http.listen(3000, function(){
     app.get('/chatroom', function(req, res) {
         // render the page and pass in any flash data if it exists
         console.log(req.session.user.pseudo)
+
+        //select from
         res.render('chatroom.ejs', {
             connect:"Log out",
             pseudo:req.session.user.pseudo,

@@ -13,7 +13,9 @@
         
         <main>
             <h1>Chatroom Title</h1>
-            <section id="zone_chat"></section>
+            <section id="zone_chat">
+
+            </section>
             <form action="" method="POST" id="chat_form">
                 <div class="row">
                     <div class="col s9">
@@ -62,7 +64,7 @@
             
             // Ajoute un message dans la page
             function insereMessage(pseudo, message) {
-                $('#zone_chat').prepend('<p><strong> ' + pseudo + ': </strong> ' + message + '</p>');
+                $('#zone_chat').append('<p><strong> ' + pseudo + ': </strong> ' + message + '</p>');
             }
         </script>
             
