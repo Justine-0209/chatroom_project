@@ -25,6 +25,7 @@ app.use(session);
 // Socket.io
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+ent = require('ent'), // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
 io.use(function(socket, next) {
     session(socket.request, socket.request.res, next);
 });
@@ -35,18 +36,19 @@ io.on("connection", function(socket){
     //aucune donnée n'est passée en plus
     socket.emit("welcome");
 
-    //quand on reçoit un message de type "chat_message"...
-    socket.on("chat_message", function(data){
+    // Dès qu'on reçoit un message, on récupère le pseudo de son auteur et on le transmet aux autres personnes
+    socket.on('message', function (message) {
         //accède aux éventuelles données de session
         console.log(socket.request.session);
-
-        //on devrait sauvegarder en bdd
-
+        message = ent.encode(message);
+        socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
         //on rebalance ce message à tout le monde
         io.emit("chat_message", data);
-    })
+    });
 
 })
+
+
 
 // Bodyparser - For Forms
 var bodyParser = require('body-parser');
@@ -243,9 +245,10 @@ http.listen(3000, function(){
     // show all the chatrooms
     app.get('/chatroom', function(req, res) {
         // render the page and pass in any flash data if it exists
-        console.log(req.session.user.firstname)
+        console.log(req.session.user.pseudo)
         res.render('chatroom.ejs', {
-            connect:"Log out"
+            connect:"Log out",
+            pseudo:req.session.user.pseudo,
         });
     });
 

@@ -13,13 +13,25 @@
         
         <main>
             <h1>Chatroom Title</h1>
-            <div class="Chatrrom">
-                <ul id="messages"></ul>
-                <form action="" method="GET">
-                    <input id="m" type="text" autocomplete="off" />
-                    <button class="btn waves-effect waves-light" type="submit" name="action">
-                        Send
-                    </button>
+            <section id="zone_chat">
+                    
+            </section>
+                <form action="" method="POST" id="chat_form">
+                    <div class="row">
+                        <div class="col s9">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <input type="text" id="message" name="message">
+                                    <label for="message">Your message here</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s3"></div>
+                            <button class="btn waves-effect waves-light" type="submit" id="send_message">
+                                    Send
+                            </button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </main>
@@ -27,5 +39,32 @@
         <footer class="page-footer">
             <% include ../partials/footer %>
         </footer>
-    
-    </bo
+
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            // Connexion à socket.io
+            var socket = io.connect('http://localhost:8080');
+
+            // Quand on reçoit un message, on l'insère dans la page
+            socket.on('message', function(data) {
+                insereMessage(data.pseudo, data.message)
+            })
+
+            // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
+            $('#chat_form').submit(function () {
+                var message = $('#message').val();
+                socket.emit('message', message); // Transmet le message aux autres
+                insereMessage(pseudo, message); // Affiche le message aussi sur notre page
+                $('#message').val('').focus(); // Vide la zone de Chat et remet le focus dessus
+                return false; // Permet de bloquer l'envoi "classique" du formulaire
+            });
+            
+            // Ajoute un message dans la page
+            function insereMessage(pseudo, message) {
+                $('#zone_chat').prepend('<p><strong>' + pseudo + '</strong> ' + message + '</p>');
+            }
+        </script>
+            
+    </body>
+</html>
