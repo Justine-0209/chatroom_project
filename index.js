@@ -115,10 +115,6 @@ app.post('/login', function(req, res) {
                     if (results){
                        console.log("Connected!");
                     }
-                    if (results){
-                        res.send('wrong password or pseudo !'),
-                        console.log("Not Connected");
-                     }
                     if (error) {
                         throw error;}
                     res.redirect("/");
