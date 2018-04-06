@@ -285,11 +285,25 @@ http.listen(3000, function(){
     // =====================================
     // show all the chatrooms
     app.get('/all-chatrooms', function(req, res) {
-        // render the page and pass in any flash data if it exists
-        res.render('all-chatrooms.ejs', {
-            connect:"Log out"
+
+        console.log(req.session.user.pseudo)
+        console.log(req.session.user.chatroom_id)
+
+        connection.query(
+            'SELECT * FROM chatroom',
+            function (err, results, fields) {
+                console.log(results)
+                if (results.length>0){
+                    res.render('all-chatrooms.ejs', {
+                        connect:"Log out",
+                        results:results,
+                        pseudo:req.session.user.pseudo
+                    });
+                }
+                else{ res.send('no result')}
+                if (err) {throw err;}   
+            });
         });
-    });
 
     // =====================================
     // CREATE CHATROOMS ====================
