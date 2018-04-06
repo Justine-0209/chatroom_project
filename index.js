@@ -11,8 +11,10 @@ connection.connect();
 
 // Express
 const express = require('express')
+const fileUpload = require('express-fileupload');
 const app = express()
 app.use(express.static('public'));
+app.use(fileUpload());
 
 // Sessions
 var session = require('express-session')({
@@ -167,9 +169,13 @@ app.post('/login', function(req, res) {
 // create chatroom page
 app.post('/create-chatroom', function(req, res) {
     var chatroom_title = req.body.chatroom_title;
+    var chatroom_decription = req.body.chatroom_description;
     var pseudo = req.body.guest;
     var master_user_id= req.session.user.user_id;
     var error = ""
+
+    var picture_name=req.files.chatroom_picture.name;
+    var chatroom_picture=req.files.chatroom_picture;
 
     if (chatroom_title == ""){
         error = "Please enter a title for your chatroom"
@@ -179,22 +185,33 @@ app.post('/create-chatroom', function(req, res) {
         error = "Please enter a guest pseudo"
     }
 
+    if (!req.files){
+        error = 'No files were uploaded.'
+    }
+   
+    console.log(req.files.chatroom_picture);
+    
     if (error == ""){
-        // =====================================
-        // connection to the database
-            connection.query('INSERT INTO chatroom VALUES (NULL, ?, NOW(), ?)',
-            [chatroom_title, master_user_id],
+        // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+        let chatroom_picture = req.files.chatroom_picture;
+            
+        // Use the mv() method to place the file somewhere on your server
+        chatroom_picture.mv('public/images/chatroom/'+picture_name, function(err) {
+            if (err){
+                return res.status(500).send(err);
+            }
+            connection.query(
+                'INSERT INTO chatroom VALUES (NULL, ?, ?, ?, NOW(), ?)',
+                [chatroom_title, chatroom_decription, picture_name, master_user_id],
                 function (err, results, fields) {
-                    if(err){
-                        throw err;
-                    }
+                    if(err){throw err;}
                     res.redirect("/chatroom?id=" + results.insertId);
-                });   
+                }
+            );   
+        })
     }
     else{
-        res.render('create-chatroom.ejs', {
-            error:error
-        });
+        res.render('create-chatroom.ejs', {error:error});
     }
 });
 
@@ -292,15 +309,32 @@ http.listen(3000, function(){
     // show all the chatrooms
     app.get('/chatroom', function(req, res) {
         // render the page and pass in any flash data if it exists
+        
         console.log(req.session.user.pseudo)
+        console.log(req.query.id)
 
-        //select from
-        res.render('chatroom.ejs', {
-            connect:"Log out",
-            pseudo:req.session.user.pseudo,
-            message:req.session.user.message_content,
+        connection.query(
+            'SELECT * FROM chatroom WHERE chatroom_id=?',
+            [req.query.id],
+            function (err, results, fields) {
+                console.log(results)
+                if (results.length>0){
+                    chatroom_title=results[0].title;
+                }
+                if (err) {throw err;}
+                else{
+                    console.log(chatroom_title)
+                    res.render('chatroom.ejs', {
+                        connect:"Log out",
+                        chatroom_title:chatroom_title,
+                        pseudo:req.session.user.pseudo
+                    });
+                }   
+
+                //select from
+                
+            });
         });
-    });
 
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
