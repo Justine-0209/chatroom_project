@@ -15,9 +15,7 @@
             <h1>All chatrooms</h1>
             <div>
                     <a class="btn-floating btn-large waves-effect waves-light red" href="create-chatroom"><i class="material-icons">add</i></a>
-                    <a class="waves-effect waves-light btn" href="chatroom">Chatroom</a>
 
-                    
                         <% for(var i=0; i<results.length; i++) {%>
                             
                                 <div class="card">
@@ -26,7 +24,7 @@
                                         </div>
                                         <div class="card-content">
                                         <span class="card-title activator grey-text text-darken-4"><%= results[i].title %><i class="material-icons right">more_vert</i></span>
-                                        <p><a href="#">This is a link</a></p>
+                                        <p><a href="/chatroom?id=<%= results[i].chatroom_id %>">Go to the chatroom</a></p>
                                         </div>
                                         <div class="card-reveal">
                                         <span class="card-title grey-text text-darken-4"><%= results[i].title %><i class="material-icons right">close</i></span>

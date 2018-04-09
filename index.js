@@ -112,7 +112,7 @@ app.post('/signup', function(req, res) {
                     if(err){
                         throw err;
                     }
-                    res.redirect("/all-chatrooms");
+                    res.redirect("/login");
                 });      
     }
     else{
@@ -300,7 +300,7 @@ http.listen(3000, function(){
                         pseudo:req.session.user.pseudo
                     });
                 }
-                else{ res.send('no result')}
+                else{ res.render('create-chatroom.ejs')}
                 if (err) {throw err;}   
             });
         });
