@@ -147,6 +147,7 @@ app.post('/login', function(req, res) {
                     if (results.length>0){
                        console.log("Connected!");
                        req.session.user=results[0];
+
                        res.redirect("/all-chatrooms");
                     }
                     else{
@@ -239,6 +240,8 @@ http.listen(3000, function(){
             error:"",
             connect:""
         });
+
+        
     });
 
     // process the login form
