@@ -74,7 +74,7 @@
             var socket = io({ query: "chatroom_id=<%= chatroom_id %>" });
 
             socket.on('chat_message', function (data) {
-                insereMessage(data.pseudo, data.message);
+                insereMessage(data.pseudo, data.message, data.picture);
             });
 
             // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
@@ -86,9 +86,17 @@
             });
             
             // Ajoute un message dans la page
-            function insereMessage(pseudo, message) {
-                $('#zone_chat').append('<div><div class="chip"><img src="images/profile/'+picture+'>'+pseudo+'</div> <span class="chat_message">'+message+'</span></div>');
+            function insereMessage(pseudo, message, picture) {
+                if (picture != null) {
+                    $('#zone_chat').append('<div><div class="chip"><img src="images/profile/'+picture+'">'+pseudo+'</div> <span class="chat_message">'+message+'</span></div>');
+                }
+                else{
+                    $('#zone_chat').append('<div><div class="chip"><img src="images/profile/profile_picture.png>'+pseudo+'</div> <span class="chat_message">'+message+'</span></div>');
+                }
+                $('.section_chat').scrollTop($('.section_chat')[0].scrollHeight);
             }
+            $('.section_chat').scrollTop($('.section_chat')[0].scrollHeight);
+            
         </script>
             
     </body>

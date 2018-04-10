@@ -5,12 +5,12 @@
     flex-direction: column;
 }
 
-/*body{
-    background-image:-moz-linear-gradient(30deg, #feada6, #f5efef);
-    background-image:-webkit-linear-gradient(30deg,  #feada6, #f5efef);
-    background-image:-o-linear-gradient(30deg, #feada6, #f5efef);
-    background-image:linear-gradient(60deg, #feada6, #f5efef);
-}*/
+body{
+    background-image:-moz-linear-gradient(30deg, #4568dc, #b06ab3);
+    background-image:-webkit-linear-gradient(30deg,  #4568dc, #b06ab3);
+    background-image:-o-linear-gradient(30deg, #4568dc, #b06ab3);
+    background-image:linear-gradient(30deg, #4568dc, #b06ab3);
+}
 
 
 /* HOMEPAGE */

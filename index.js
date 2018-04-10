@@ -59,7 +59,7 @@ io.on("connection", function(socket){
                         throw err;
                     }
                 });
-        io.emit("chat_message", {message: message, pseudo: socket.request.session.user.pseudo});
+        io.emit("chat_message", {message: message, pseudo: socket.request.session.user.pseudo, picture: socket.request.session.user.picture});
     });
 })
 
