@@ -14,41 +14,50 @@
         <main>
             <h1>Sign up</h1>    
             <div class="form_signup row">
-                <form class="col s12" method="POST">
-                <div class="row">
-                    <div class="input-field col s6">
-                        <input id="first_name" name="firstname" type="text" class="validate">
-                        <label for="first_name">First Name</label>
+                <form class="col s12" method="POST" encType="multipart/form-data">
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <input id="first_name" name="firstname" type="text" class="validate">
+                            <label for="first_name">First Name</label>
+                        </div>
+                        <div class="input-field col s6">
+                        <input id="last_name" name="lastname" type="text" class="validate" va>
+                        <label for="last_name">Last Name</label>
+                        </div>
                     </div>
-                    <div class="input-field col s6">
-                    <input id="last_name" name="lastname" type="text" class="validate">
-                    <label for="last_name">Last Name</label>
+                    
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <input id="pseudo" name="pseudo" type="text" class="validate">
+                            <label for="pseudo">Pseudo</label>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="row">
-                    <div class="input-field col s6">
-                        <input id="pseudo" name="pseudo" type="text" class="validate">
-                        <label for="pseudo">Pseudo</label>
+                    <div class="row">
+                        <div class="input-field col s6">
+                        <input id="password" name="password" type="password" class="validate">
+                        <label for="password">Password</label>
+                        </div>
+                        <div class="input-field col s6">
+                        <input id="confirm_password" name="confirm_password" type="password" class="validate">
+                        <label for="confirm_password">Confirm password</label>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s6">
-                    <input id="password" name="password" type="password" class="validate">
-                    <label for="password">Password</label>
+                    <div class="row">
+                        <div class="input-field col s12">
+                        <input id="email" name="email" type="email" class="validate">
+                        <label for="email">Email</label>
+                        </div>
                     </div>
-                    <div class="input-field col s6">
-                    <input id="confirm_password" name="confirm_password" type="password" class="validate">
-                    <label for="confirm_password">Confirm password</label>
+                    <div class="file-field input-field">
+                        <div class="btn">
+                            <span>Profile Picture</span>
+                            <input type="file" name="profile_picture">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Upload a profile picture (not mandatory)">
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s12">
-                    <input id="email" name="email" type="email" class="validate">
-                    <label for="email">Email</label>
-                    </div>
-                </div>
-                <div class="btn_login_signup">
+                    <div class="btn_login_signup">
                         <button class="waves-effect waves-light btn">Sign up</button>
                     </div>
                 </form>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Your profile</title>
+        <% include ../partials/head %>
+    </head>
+
+    <body>
+
+        <header>
+            <% include ../partials/header %>
+        </header>
+        
+        <main class="body-content">
+            <h1>Your profile</h1>
+            <div class="col s12 m8 offset-m2 l6 offset-l3 profile-content">
+                <div class="card-panel grey lighten-5 z-depth-1">
+                    <div class="row valign-wrapper info-profile">
+                        <div class="col s2">
+                            <% if (results[0].picture != null) { %>
+                                <img src="images/profile/<%= results[0].picture %>" class="circle responsive-img">
+                            <% } else { %>
+                                <img src="images/profile/profile_picture.png" alt="profile_picture" class="circle responsive-img"> 
+                            <% } %>
+                        </div>
+                        <div class="col s10">
+                        <span class="black-text">
+                            <h2>Hello <%= results[0].firstname %> <%= results[0].lastname %> !</h2>
+                            <p>
+                                This is your <strong>pseudo</strong> : <%= results[0].pseudo %>, <strong>password</strong> : <%= results[0].password %><br>
+                                and <strong>email</strong> : <%= results[0].email %>
+                            </p>
+                        </span>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="row valign-wrapper btn-profile">
+                        <p>You want to change your informations or picture ?</P>
+                        <a class="waves-effect waves-light btn" href="/edit-profile">Edit profile</a>
+                    </div>
+                </div>
+              </div>
+        </main>
+    
+        <footer class="page-footer">
+            <% include ../partials/footer %>
+        </footer>
+    </body>
+</html>

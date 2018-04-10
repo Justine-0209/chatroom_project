@@ -1,5 +1,5 @@
 // connection to BDD
-var mysql      = require('mysql');
+var mysql = require('mysql');
 var connection = mysql.createConnection({
   host     : 'localhost',
   port : '8889',
@@ -24,13 +24,21 @@ var session = require('express-session')({
 );
 app.use(session);
 
-// Socket.io
+
+
+// =====================================
+// SOCKET.IO ===========================
+// =====================================
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 ent = require('ent'), // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
 
-io.use(function(socket, next) {
+io.use(function(socket, next){
+    var handshake = socket.handshake;
+    console.log(handshake.query);
+    console.log("Query: ", socket.handshake.query);
     session(socket.request, socket.request.res, next);
+    next();
 });
 
 io.on("connection", function(socket){
@@ -38,11 +46,14 @@ io.on("connection", function(socket){
 
     socket.on('chat_message', function (data) {
         console.log(socket.request.session);
+        console.log("message envoyé !");
         message = ent.encode(data);
         var user_id = socket.request.session.user.user_id;
         var message_content = message;
-        connection.query('INSERT INTO message VALUES (NULL, ?, ?, NOW(), NULL )',
-            [user_id, message_content],
+        var chatroom_id = socket.handshake.query.chatroom_id;
+
+        connection.query('INSERT INTO message VALUES (NULL, ?, ?, NOW(), ? )',
+            [user_id, message_content, chatroom_id],
                 function (err, results, fields) {
                     if(err){
                         throw err;
@@ -59,7 +70,24 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false })) 
 app.use(bodyParser.json());
 
-// signup page
+
+
+// =====================================
+// HOME PAGE (with login links) ========
+// =====================================
+
+// GET =================
+app.get('/', function(req, res) {
+    res.render('index.ejs');
+});
+
+
+
+// =====================================
+// SIGNUP ==============================
+// =====================================
+
+// POST =================
 app.post('/signup', function(req, res) {
     var firstname = req.body.firstname;
     var lastname = req.body.lastname;
@@ -68,61 +96,74 @@ app.post('/signup', function(req, res) {
     var confirm_password = req.body.confirm_password;
     var email = req.body.email;
     var error = ""
-
-    // =====================================
+    
+    
     // if empty fields
+    if (firstname == ""){error = "Please enter your firstname"}
 
-    if (firstname == ""){
-        error = "Please enter your firstname"
-    }
+    if (lastname == ""){error = "Please enter your lastname"}
 
-    if (lastname == ""){
-        error = "Please enter your lastname"
-    }
+    if (pseudo == ""){error = "Please enter your pseudo"}
 
-    if (pseudo == ""){
-        error = "Please enter your pseudo"
-    }
+    if (password == ""){error = "Please enter your password"}
 
-    if (password == ""){
-        error = "Please enter your password"
-    }
+    if (confirm_password == ""){error = "Please confirm your password"}
 
-    if (confirm_password == ""){
-        error = "Please confirm your password"
-    }
+    if (email == ""){error = "Please enter your email"}
 
-    if (email == ""){
-        error = "Please enter your email"
-    }
-
-    // =====================================
     // matching passwords
-
-    if (confirm_password != password){
-        error = "Your passwords don't match"
-    }
+    if (confirm_password != password){ error = "Your passwords don't match"}
 
     if (error == ""){
-        // =====================================
-        // connection to the database
+        // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+        var profile_picture=req.files.profile_picture;
+                    
+        
+        if (typeof profile_picture !=="undefined" && profile_picture){
+            var picture_name=req.files.profile_picture.name;
+            // Use the mv() method to place the file somewhere on your server
+            profile_picture.mv('public/images/profile/'+picture_name, function(err) {
+                if (err){
+                    return res.status(500).send(err);
+                } 
+            
+                connection.query('INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, ?, NOW())',
+                [firstname, lastname, pseudo, password, email, picture_name],
+                function (err, results, fields) {
+                        if(err){throw err;}
+                        res.redirect("/login");
+                }); 
+            });
+        }
+        else {
             connection.query('INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, NULL, NOW())',
             [firstname, lastname, pseudo, password, email],
-                function (err, results, fields) {
-                    if(err){
-                        throw err;
-                    }
-                    res.redirect("/login");
-                });      
+            function (err, results, fields) {
+                        if(err){throw err;}
+                        res.redirect("/login");
+            }); 
+        }
     }
     else{
-        res.render('signup.ejs', {
-            error:error
-        });
+        res.render('signup.ejs', {error:error});
     }
 });
 
-// login page
+// GET =================
+app.get('/signup', function(req, res) {
+    res.render('signup.ejs', {
+        error:"",
+        connect:""
+    });
+});
+
+
+
+// =====================================
+// LOGIN ===============================
+// =====================================
+
+// POST =================
 app.post('/login', function(req, res) {
     var pseudo = req.body.pseudo;
     var password = req.body.password;
@@ -130,13 +171,9 @@ app.post('/login', function(req, res) {
 
     // =====================================
     // if empty fields
-    if (pseudo == ""){
-        error = "Please enter your pseudo"
-    }
+    if (pseudo == ""){error = "Please enter your pseudo"}
 
-    if (password == ""){
-        error = "Please enter your password"
-    }
+    if (password == ""){error = "Please enter your password"}
 
     if (error == ""){
         // =====================================
@@ -146,6 +183,7 @@ app.post('/login', function(req, res) {
                 function (err, results, fields) {
                     if (results.length>0){
                        console.log("Connected!");
+                       console.log(pseudo);
                        req.session.user=results[0];
 
                        res.redirect("/all-chatrooms");
@@ -167,7 +205,34 @@ app.post('/login', function(req, res) {
     }
 });
 
-// create chatroom page
+// GET =================
+app.get('/login', function(req, res) {
+    res.render('login.ejs', {
+        error:"",
+        connect:""
+    });
+});
+
+
+
+// =====================================
+// LOGOUT ==============================
+// =====================================
+
+// GET =================
+app.get('/logout', function(req, res) {
+    req.session.user=null;
+    console.log('Disconnected');
+    res.redirect('/');
+});
+
+
+
+// =====================================
+// CREATE CHATROOMS ====================
+// =====================================
+
+// POST =================
 app.post('/create-chatroom', function(req, res) {
     var chatroom_title = req.body.chatroom_title;
     var chatroom_decription = req.body.chatroom_description;
@@ -178,17 +243,11 @@ app.post('/create-chatroom', function(req, res) {
     var picture_name=req.files.chatroom_picture.name;
     var chatroom_picture=req.files.chatroom_picture;
 
-    if (chatroom_title == ""){
-        error = "Please enter a title for your chatroom"
-    }
+    if (chatroom_title == ""){error = "Please enter a title for your chatroom"}
 
-    if (pseudo == ""){
-        error = "Please enter a guest pseudo"
-    }
+    if (pseudo == ""){error = "Please enter a guest pseudo"}
 
-    if (!req.files){
-        error = 'No files were uploaded.'
-    }
+    if (!req.files){error = 'No files were uploaded.'}
    
     console.log(req.files.chatroom_picture);
     
@@ -216,148 +275,263 @@ app.post('/create-chatroom', function(req, res) {
     }
 });
 
+// GET =================
+app.get('/create-chatroom', function(req, res) {
+    res.render('create-chatroom.ejs', {
+        connect:"Log out",
+        pseudo:req.session.user.pseudo,
+        message:req.session.user.message_content,
+    });
+});
+
+// =====================================
+// ALL CHATROOMS =======================
+// =====================================
+
+// GET =================
+app.get('/all-chatrooms', function(req, res) {
+
+    console.log(req.session.user.pseudo)
+
+    connection.query(
+        'SELECT * FROM chatroom',
+        function (err, results, fields) {
+            console.log(results)
+            if (results.length>0){
+                res.render('all-chatrooms.ejs', {
+                    connect:"Log out",
+                    results:results,
+                    pseudo:req.session.user.pseudo,
+                });
+            }
+            else{ res.render('create-chatroom.ejs')}
+            if (err) {throw err;}   
+        });
+    });
+
+
+    
+// =====================================
+// DELETE CHATROOM =====================
+// =====================================
+
+// GET =================
+app.get('/delete-chatroom', function(req, res) {
+    connection.query(
+        'DELETE FROM chatroom WHERE chatroom_id=?',
+        [req.query.id],
+        function (err, results, fields) {
+            console.log(results)
+            if (results.length>0){
+                res.render('all-chatrooms.ejs', {
+                    connect:"Log out",
+                    results:results,
+                    pseudo:req.session.user.pseudo,
+                });
+            }
+            else{ res.render('all-chatroom.ejs')}
+            if (err) {throw err;}   
+        });
+    res.redirect('/all-chatrooms');
+});
+
+
+
+
+// =====================================
+// CHATROOM ============================
+// =====================================
+
+// GET =================
+app.get('/chatroom', function(req, res) {
+    console.log(req.session.user.pseudo)
+    console.log(req.query.id)
+
+    connection.query(
+        'SELECT * FROM chatroom WHERE chatroom_id=?',
+        [req.query.id],
+        function (err, results, fields) {
+            console.log(results)
+            if (results.length>0){
+                chatroom_title=results[0].title;
+            }
+                        if (err) {throw err;}
+            else{
+                console.log(chatroom_title)
+                connection.query(
+                    'SELECT * FROM message JOIN user ON message.user_id=user.user_id WHERE chatroom_id=?',
+                    [req.query.id],
+                    function (err, results2, fields) {
+                        console.log(results2)
+                        if (err) {throw err;}
+            else if (results.length>0){
+                            res.render('chatroom.ejs', {
+                            results:results2,
+                            chatroom_title:chatroom_title,
+                            connect:"Log out",
+                            pseudo:req.session.user.pseudo,
+                            chatroom_id:req.query.id
+                            });
+                        }
+                    });
+                }
+            }   
+    );
+});   
+
+
+
+// =====================================
+// PROFILE PAGE ========================
+// =====================================
+
+// GET =================
+app.get('/profile', isLoggedIn, function(req, res) {
+    console.log(req.session.user.pseudo)
+    var pseudo = req.session.user.pseudo;
+
+    connection.query(
+        'SELECT * FROM user WHERE pseudo=?',
+        [pseudo],
+        function (err, results, fields) {
+        console.log(results)
+        if (results.length>0){
+            res.render('profile.ejs', {
+                connect:"Log out",
+                results:results,
+                pseudo:req.session.user.pseudo,
+                user:req.session.user.user_id
+            });
+        }
+        else{ res.render('profile.ejs')}
+        if (err) {throw err;}   
+});
+});
+
+
+
+// =====================================
+// EDIT PROFILE ========================
+// =====================================
+
+// POST =================
+app.post('/edit-profile', function(req, res) {
+    var firstname = req.body.firstname;
+    var lastname = req.body.lastname;
+    var pseudo = req.body.pseudo;
+    var password = req.body.password;
+    var confirm_password = req.body.confirm_password;
+    var email = req.body.email;
+    var error = ""
+
+    var user_id = req.session.user.user_id;
+
+
+    if (firstname == ""){ error = "Please enter your firstname"}
+
+    if (lastname == ""){ error = "Please enter your lastname"}
+
+    if (pseudo == ""){error = "Please enter your pseudo"}
+
+    if (password == ""){error = "Please enter your password"}
+
+    if (confirm_password == ""){error = "Please confirm your password"}
+
+    if (email == ""){error = "Please enter your email"}
+
+    if (error == ""){
+        // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+        var edit_profile_picture=req.files.edit_profile_picture;
+                    
+        
+        if (typeof edit_profile_picture !=="undefined" && edit_profile_picture){
+            var picture_name=req.files.edit_profile_picture.name;
+            // Use the mv() method to place the file somewhere on your server
+            edit_profile_picture.mv('public/images/profile/'+picture_name, function(err) {
+                if (err){
+                    return res.status(500).send(err);
+                }
+            connection.query(
+                'UPDATE user SET firstname=?, lastname=?, pseudo=?, password=?, email=?, picture=? WHERE user_id=?',
+                [firstname, lastname, pseudo, password, email, picture_name, user_id],
+                function (err, results, fields) {
+                    if(err){throw err;}
+                    res.redirect("/profile");
+                }); 
+            });
+        }
+        else {
+            connection.query(
+                'UPDATE user SET firstname=?, lastname=?, pseudo=?, password=?, email=?, picture=NULL WHERE user_id=?',
+                [firstname, lastname, pseudo, password, email, user_id],
+                function (err, results, fields) {
+                    if(err){throw err;}
+                     
+                    res.redirect("/profile");
+                });
+        }
+    }
+    else{
+        res.render('profile.ejs', {
+            error:error
+        });
+    }
+});
+
+// GET =================
+app.get('/edit-profile', isLoggedIn, function(req, res) {
+    console.log(req.session.user.pseudo)
+    var user_id = req.session.user.user_id;
+
+    connection.query(
+        'SELECT * FROM user WHERE user_id=?',
+        [user_id],
+        function (err, results, fields) {
+        console.log(results)
+        if (results.length>0){
+            res.render('edit-profile.ejs', {
+                connect:"Log out",
+                error:"",
+                results:results,
+                pseudo:req.session.user.pseudo,
+                user:req.session.user.user_id
+            });
+        }
+        else{ res.render('profile.ejs')}
+        if (err) {throw err;}
+    });
+});
+
+
+
+// =====================================
+// INVITATIONS =========================
+// =====================================
+
+// GET =================
+app.get('/invitations', function(req, res) {
+    res.render('invitations.ejs', {
+        connect:"Log out",
+        pseudo:req.session.user.pseudo
+    });
+});
+
+
+
+
 
 
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });
 
-    // =====================================
-    // HOME PAGE (with login links) ========
-    // =====================================
-    app.get('/', function(req, res) {
-        res.render('index.ejs'); // load the index.ejs file
-    });
 
-    // =====================================
-    // LOGIN ===============================
-    // =====================================
-    // show the login form
-    app.get('/login', function(req, res) {
-
-        // render the page and pass in any flash data if it exists
-        res.render('login.ejs', {
-            error:"",
-            connect:""
-        });
-
-        
-    });
-
-    // process the login form
-    // app.post('/login', do all our passport stuff here);
-
-    // =====================================
-    // SIGNUP ==============================
-    // =====================================
-    // show the signup form
-    app.get('/signup', function(req, res) {
-
-        // render the page and pass in any flash data if it exists
-        res.render('signup.ejs', {
-            error:"",
-            connect:""
-        });
-    });
-
-    // process the signup form
-    // app.post('/signup', do all our passport stuff here);
-
-    // =====================================
-    // PROFILE SECTION =====================
-    // =====================================
-    // we will want this protected so you have to be logged in to visit
-    // we will use route middleware to verify this (the isLoggedIn function)
-    app.get('/profile', isLoggedIn, function(req, res) {
-        res.render('profile.ejs', {
-            user : req.user // get the user out of session and pass to template
-        });
-    });
-
-    // =====================================
-    // LOGOUT ==============================
-    // =====================================
-    app.get('/logout', function(req, res) {
-        req.session.user=null;
-        console.log('Disconnected');
-        res.redirect('/');
-    });
-
-    // =====================================
-    // ALL CHATROOMS =======================
-    // =====================================
-    // show all the chatrooms
-    app.get('/all-chatrooms', function(req, res) {
-
-        console.log(req.session.user.pseudo)
-        console.log(req.session.user.chatroom_id)
-
-        connection.query(
-            'SELECT * FROM chatroom',
-            function (err, results, fields) {
-                console.log(results)
-                if (results.length>0){
-                    res.render('all-chatrooms.ejs', {
-                        connect:"Log out",
-                        results:results,
-                        pseudo:req.session.user.pseudo
-                    });
-                }
-                else{ res.render('create-chatroom.ejs')}
-                if (err) {throw err;}   
-            });
-        });
-
-    // =====================================
-    // CREATE CHATROOMS ====================
-    // =====================================
-    // show all the chatrooms
-    app.get('/create-chatroom', function(req, res) {
-        res.render('create-chatroom.ejs', {
-            connect:"Log out",
-            pseudo:req.session.user.pseudo,
-            message:req.session.user.message_content,
-        });
-    });
-
-    // =====================================
-    // CHATROOMS ===========================
-    // =====================================
-    // show all the chatrooms
-    app.get('/chatroom', function(req, res) {
-        // render the page and pass in any flash data if it exists
-        
-        console.log(req.session.user.pseudo)
-        console.log(req.query.id)
-
-        connection.query(
-            'SELECT * FROM chatroom WHERE chatroom_id=?',
-            [req.query.id],
-            function (err, results, fields) {
-                console.log(results)
-                if (results.length>0){
-                    chatroom_title=results[0].title;
-                }
-                if (err) {throw err;}
-                else{
-                    console.log(chatroom_title)
-                    res.render('chatroom.ejs', {
-                        connect:"Log out",
-                        chatroom_title:chatroom_title,
-                        pseudo:req.session.user.pseudo
-                    });
-                }   
-
-                //select from
-                
-            });
-        });
-
+//=======================================
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
 
     // if user is authenticated in the session, carry on 
-    if (req.isAuthenticated())
+    if (req.session.user!=null)
         return next();
 
     // if they aren't redirect them to the home page

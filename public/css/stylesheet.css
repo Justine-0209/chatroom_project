@@ -1,5 +1,19 @@
-/* HOMEPAGE */
+/*GENERAL*/
+.body-content{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
 
+/*body{
+    background-image:-moz-linear-gradient(30deg, #feada6, #f5efef);
+    background-image:-webkit-linear-gradient(30deg,  #feada6, #f5efef);
+    background-image:-o-linear-gradient(30deg, #feada6, #f5efef);
+    background-image:linear-gradient(60deg, #feada6, #f5efef);
+}*/
+
+
+/* HOMEPAGE */
 #logo{
     width: 150px;
     margin: 20px auto;
@@ -103,4 +117,95 @@ h1{
 
 #form_create_chatroom button{
     margin: 20px;
+}
+
+/* ALL CHATROOMS */
+.card{
+    width: 30%;
+}
+
+.all-cards{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    width: 90%;
+    margin: 20px 0px 50px 0px;
+}
+
+
+/* CHATROOM*/
+#chat-content {
+    height: 500px;
+    width: 50%;
+    margin: 20px 0px 80px 0px;
+}
+.section_chat{
+    overflow: scroll;
+
+    height: 350px;
+    padding: 20px;
+}
+
+.zone_chat{
+    flex-direction: column;
+    text-align: left;
+    border: red 1px solid;
+}
+
+.chip{
+    width: 130px;
+    text-align: center;
+}
+
+.chat_pseudo{
+    text-align: center;
+    border: green 1px solid;
+}
+
+.chat_message{
+    text-align: left;
+    word-wrap: break-word; 
+}
+
+.historic{
+    border: violet 1px solid;
+    flex-direction: column;
+}
+
+.messages_historic{
+    flex-direction: column;
+}
+.chat-bottom-part{
+    position: relative;
+    bottom: 0px;
+}
+
+#send_message{
+    margin: 20px auto;
+}
+
+/* PROFILE */
+.img-profile{
+    width: 100px;
+}
+
+.profile-content{
+    width: 50%;
+    margin: 50px 0px;
+}
+
+.black-text h2{
+    font-size: 26px;
+}
+
+.row.valign-wrapper.btn-profile{
+    margin-bottom: 0px;
+    flex-direction: column;
+}
+
+/* EDIT PROFILE */
+.picture_edit_profile{
+    width: 100px;
+    margin: 30px;
 }

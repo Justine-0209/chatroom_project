@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <% include ../partials/head %>
+        <title>Edit Profile</title>
+    </head>
+
+    <body>
+
+        <header>
+            <% include ../partials/header %>
+        </header>
+        
+        <main class="body-content">
+            <h1>Edit Profile</h1>   
+            <div class="col s2 picture_edit_profile">
+                <% if (results[0].picture != null) { %>
+                    <img src="images/profile/<%= results[0].picture %>" class="circle responsive-img">
+                <% } else { %>
+                    <img src="images/profile/profile_picture.png" alt="profile_picture" class="circle responsive-img"> 
+                <% } %> 
+            </div>
+            <div class="form_signup row">
+                <form class="col s12" method="POST" encType="multipart/form-data">
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <input value="<%= results[0].firstname %>" id="first_name" name="firstname" type="text" class="validate">
+                            <label for="first_name">Firstname</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <input value="<%= results[0].lastname %>" id="last_name" name="lastname" type="text" class="validate">
+                            <label for="last_name">Firstname</label>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <input value="<%= results[0].pseudo %>" id="pseudo" name="pseudo" type="text" class="validate">
+                            <label for="pseudo">Pseudo</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <input value="<%= results[0].password %>" id="password" name="password" type="password" class="validate">
+                            <label for="password">Password</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input value="<%= results[0].email %>" id="email" name="email" type="email" class="validate">
+                            <label for="email">Email</label>
+                        </div>
+                    </div>
+                    <div class="file-field input-field">
+                        <div class="btn">
+                            <span>Profile Picture</span>
+                            <input type="file" name="edit_profile_picture">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Upload a profile picture (not mandatory)" value="<%= results[0].picture %>">
+                        </div>
+                    </div>
+                    <div class="btn_login_signup">
+                        <button class="waves-effect waves-light btn">Edit Profile</button>
+                    </div>
+                </form>
+            </div>
+            <%= error %>
+        </main>
+        
+        
+        <footer class="page-footer">
+            <% include ../partials/footer %>
+        </footer>
+    
+    </body>
+</html>
