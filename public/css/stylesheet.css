@@ -5,12 +5,21 @@
     flex-direction: column;
 }
 
-/*body{
-    background-image:-moz-linear-gradient(30deg, #4568dc, #b06ab3);
-    background-image:-webkit-linear-gradient(30deg,  #4568dc, #b06ab3);
-    background-image:-o-linear-gradient(30deg, #4568dc, #b06ab3);
-    background-image:linear-gradient(30deg, #4568dc, #b06ab3);
-}*/
+.nav-wrapper, .page-footer{
+    background-color: #5F4B8B !important;
+}
+
+.btn{
+    background-color: #547A7F !important;
+}
+
+h1{
+    font-family: 'Lobster';
+}
+
+body{
+    background-color: #ffffff;
+}
 
 
 /* HOMEPAGE */

@@ -21,12 +21,14 @@
                                             <% for(var i=0; i<results.length; i++) {%>
                                                 <div>
                                                     <div class="chip">
-                                                            <% if (results[0].picture != null) { %>
-                                                                <img src="images/profile/<%= results[0].picture %>" >
+                                                            <% if (results[i].picture != null) { %>
+                                                                <img src="images/profile/<%= results[i].picture %>" >
                                                             <% } else { %>
                                                                 <img src="images/profile/profile_picture.png" alt="profile_picture"> 
                                                             <% } %>
-                                                            <%= results[i].pseudo %></div> 
+                                                            <%= results[i].pseudo %>
+                                                            <a href="/delete-message?id=<%= results[i].message_id %>&id_chatroom=<%= results[i].chatroom_id %>"><i class="close material-icons">close</i></a>
+                                                    </div> 
                                                     <span class="chat_message"><%= results[i].message_content %></span>
                                                 </div>
                                             <% } %>
@@ -86,12 +88,12 @@
             });
             
             // Ajoute un message dans la page
-            function insereMessage(pseudo, message, picture) {
+            function insereMessage(pseudo, message, picture, message_id, chatroom_id) {
                 if (picture != null) {
-                    $('#zone_chat').append('<div><div class="chip"><img src="images/profile/'+picture+'">'+pseudo+'</div> <span class="chat_message">'+message+'</span></div>');
+                    $('#zone_chat').append('<div><div class="chip"><img src="images/profile/'+picture+'">'+pseudo+'<a href="/delete-message?id='+message_id+'&id_chatroom='+chatroom_id+'"><i class="close material-icons">close</i></a></div> <span class="chat_message">'+message+'</span></div>');
                 }
                 else{
-                    $('#zone_chat').append('<div><div class="chip"><img src="images/profile/profile_picture.png>'+pseudo+'</div> <span class="chat_message">'+message+'</span></div>');
+                    $('#zone_chat').append('<div><div class="chip"><img src="images/profile/profile_picture.png">'+pseudo+'<a href="/delete-message?id='+message_id+'&id_chatroom='+chatroom_id+'"><i class="close material-icons">close</i></a></div> <span class="chat_message">'+message+'</span></div>');
                 }
                 $('.section_chat').scrollTop($('.section_chat')[0].scrollHeight);
             }

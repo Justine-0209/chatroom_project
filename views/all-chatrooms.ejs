@@ -29,21 +29,23 @@
                         </div>
                     </div>
                     <% for(var i=0; i<results.length; i++) {%>
-                            <div class="card">
-                                <div class="card-image waves-effect waves-block waves-light">
-                                    <img class="activator" src="images/chatroom/<%= results[i].chatroom_picture %>">
-                                    </div>
-                                    <div class="card-content">
-                                    <span class="card-title activator grey-text text-darken-4"><%= results[i].title %><i class="material-icons right">more_vert</i></span>
-                                    <p><a href="/chatroom?id=<%= results[i].chatroom_id %>">Go to the chatroom</a></p>
-                                    </div>
-                                    <div class="card-reveal">
-                                    <span class="card-title grey-text text-darken-4"><%= results[i].title %><i class="material-icons right">close</i></span>
-                                    <p><%= results[i].description %></p>
-                                    <a href="/delete-chatroom?id=<%= results[i].chatroom_id %>">Delete this chatroom</a>
+                        <div class="card">
+                            <div class="card-image waves-effect waves-block waves-light">
+                                <img class="activator" src="images/chatroom/<%= results[i].chatroom_picture %>">
                                 </div>
+                                <div class="card-content">
+                                <span class="card-title activator grey-text text-darken-4"><%= results[i].title %><i class="material-icons right">more_vert</i></span>
+                                <p><a href="/chatroom?id=<%= results[i].chatroom_id %>">Go to the chatroom</a></p>
+                                </div>
+                                <div class="card-reveal">
+                                <span class="card-title grey-text text-darken-4"><%= results[i].title %><i class="material-icons right">close</i></span>
+                                <p><%= results[i].description %></p>
+                                <% if (results[i].master_user_id == master_user_id) { %>
+                                    <a href="/delete-chatroom?id=<%= results[i].chatroom_id %>">Delete this chatroom</a>
+                                <% }%>
                             </div>
-                        <% } %>
+                        </div>
+                    <% } %>
                 </div>
             
         </main>
