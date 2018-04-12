@@ -6,13 +6,21 @@
     </head>
 
     <body>
-
         <header>
             <% include ../partials/header %>
         </header>
         
         <main class="body-content">
             <h1><%= chatroom_title %></h1>
+            <p>
+                <label>
+                    <input type="checkbox" onclick="notifyMe()" />
+                    <span>Notify me !</span>
+                </label>
+            </p>
+            
+
+
             <div class="col s12 m8 offset-m2 l6 offset-l3" id="chat-content">
                 <div class="card-panel grey lighten-5 z-depth-1 chat">
                     <div class="row valign-wrapper">
@@ -27,14 +35,15 @@
                                                                 <img src="images/profile/profile_picture.png" alt="profile_picture"> 
                                                             <% } %>
                                                             <%= results[i].pseudo %>
+                                                            <% if (results[i].user_id == user_id) { %>
                                                             <a href="/delete-message?id=<%= results[i].message_id %>&id_chatroom=<%= results[i].chatroom_id %>"><i class="close material-icons">close</i></a>
+                                                            <% } %>
                                                     </div> 
                                                     <span class="chat_message"><%= results[i].message_content %></span>
                                                 </div>
                                             <% } %>
                                     </div>
                             </section>
-                        
                     </div>
                     <div class"chat-bottom-part">
                         <div class="divider"></div>
@@ -76,9 +85,9 @@
             var socket = io({ query: "chatroom_id=<%= chatroom_id %>" });
 
             socket.on('chat_message', function (data) {
-                insereMessage(data.pseudo, data.message, data.picture);
+                insereMessage(data.pseudo, data.message, data.picture, data.message_id, data.chatroom_id);
             });
-
+            
             // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
             $('#chat_form').submit(function () {
                 var message = $('#message').val();
@@ -98,7 +107,42 @@
                 $('.section_chat').scrollTop($('.section_chat')[0].scrollHeight);
             }
             $('.section_chat').scrollTop($('.section_chat')[0].scrollHeight);
-            
+
+
+            // NOTIFICATIONS
+            var notification = new Notification();
+
+            function notifyMe() {
+                if (!("Notification" in window)) {
+                    alert("This browser does not support desktop notification");
+                }
+                else if (Notification.permission === "granted") {
+                        var options = {
+                                body: "You recieved a new message",
+                                icon: "icon.jpg",
+                                dir : "ltr"
+                            };
+                        var pseudo = req.session.user.pseudo;
+                        var notification = new Notification("Hi there !" ,options);
+                }
+                else if (Notification.permission !== 'denied') {
+                    Notification.requestPermission(function (permission) {
+                    if (!('permission' in Notification)) {
+                        Notification.permission = permission;
+                    }
+                    
+                    if (permission === "granted") {
+                        var options = {
+                            body: "You recieved a new message",
+                            icon: "icon.jpg",
+                            dir : "ltr"
+                        };
+                        var notification = new Notification("Hi there !" ,options);
+                    }
+                    });
+                }
+            }
+
         </script>
             
     </body>

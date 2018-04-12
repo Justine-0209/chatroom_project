@@ -2,16 +2,33 @@
 .body-content{
     display: flex;
     align-items: center;
+    justify-content: center;
     flex-direction: column;
 }
 
-.nav-wrapper, .page-footer{
+.nav-wrapper, .page-footer, nav{
     background-color: #5F4B8B !important;
 }
 
-.btn{
+.btn {
     background-color: #547A7F !important;
 }
+
+.card-content a, .card-reveal a, .chip a{
+    color: #547A7F !important;
+    /*font-weight: bold;*/
+    text-decoration: underline !important;
+}
+
+ /* label focus color */
+ .input-field input:focus + label {
+    color: #547A7F !important;
+}
+/* label underline focus color */
+.textarea.materialize-textarea:focus:not([readonly]) {
+    border-bottom: 1px solid #547A7F !important;
+    box-shadow: 0 1px 0 0 #000;
+  }
 
 h1{
     font-family: 'Lobster';
@@ -19,21 +36,31 @@ h1{
 
 body{
     background-color: #ffffff;
+    margin: 0; 
+    padding: 0;
 }
 
-
-/* HOMEPAGE */
-#logo{
+#logo img{
     width: 150px;
-    margin: 20px auto;
-    display: block;
+    position: relative;
+    top:12px;
+}
+
+.header-2{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .brand-logo img{
     width: 150px;
     display: block;
+    position: relative;
+    top: 12px;
+    left: 10px;
 }
 
+/* HOMEPAGE */
 .homepage-conteneur{
     display: flex;
     justify-content: space-around;
@@ -45,6 +72,7 @@ body{
     width: 50%;
     float: right;
     padding-right: 50px;
+    margin-top: 50px;
     display: flex;
     justify-content: space-around;
     flex-direction: column;

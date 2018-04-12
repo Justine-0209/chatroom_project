@@ -57,15 +57,17 @@ io.on("connection", function(socket){
         var message_content = message;
         var chatroom_id = socket.handshake.query.chatroom_id;
         var message_id;
-        
+
         connection.query('INSERT INTO message VALUES (NULL, ?, ?, NOW(), ? )',
             [user_id, message_content, chatroom_id],
                 function (err, results, fields) {
                     if(err){
                         throw err;
                     }
-                    message_id=results.insertId
+                    message_id=results.insertId,
+                    console.log(message_id);
                 });
+                
         io.emit("chat_message", {message: message, pseudo: socket.request.session.user.pseudo, picture: socket.request.session.user.picture, message_id:message_id,chatroom_id:socket.handshake.query.chatroom_id});
     });
 })
@@ -154,8 +156,7 @@ app.post('/signup', function(req, res) {
 // GET =================
 app.get('/signup', function(req, res) {
     res.render('signup.ejs', {
-        error:"",
-        connect:""
+        error:""
     });
 });
 
@@ -202,8 +203,7 @@ app.post('/login', function(req, res) {
     }
     else{
         res.render('login.ejs', {
-            error:error,
-            connect:""
+            error:error
         });
     }
 });
@@ -361,6 +361,8 @@ app.get('/chatroom', function(req, res) {
     console.log(req.session.user.pseudo)
     console.log(req.query.id)
 
+    var user_id=req.session.user.user_id;
+
     connection.query(
         'SELECT * FROM chatroom WHERE chatroom_id=?',
         [req.query.id],
@@ -385,7 +387,8 @@ app.get('/chatroom', function(req, res) {
                                 connect:"Log out",
                                 pseudo:req.session.user.pseudo,
                                 chatroom_id:req.query.id,
-                                message_id:results[0].message_id
+                                message_id:results[0].message_id,
+                                user_id:user_id
                             });
                         }
                     });
