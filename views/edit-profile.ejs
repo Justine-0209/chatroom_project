@@ -12,7 +12,18 @@
         </header>
         
         <main class="body-content">
-            <h1>Edit Profile</h1>   
+            <h1>Edit Profile</h1> 
+              
+            <% if (error != "") { %>
+                <div class="card-panel grey lighten-5 z-depth-1">
+                    <div class="row valign-wrapper info-profile">
+                        <div class="col s12">
+                            <%= error %>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+
             <div class="col s2 picture_edit_profile">
                 <% if (results[0].picture != null) { %>
                     <img src="images/profile/<%= results[0].picture %>" class="circle responsive-img">
@@ -63,7 +74,6 @@
                     </div>
                 </form>
             </div>
-            <%= error %>
         </main>
         
         

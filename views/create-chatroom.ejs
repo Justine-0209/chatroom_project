@@ -13,6 +13,16 @@
         
         <main>
             <h1>Create a chatroom</h1>
+            <% if (error != "") { %>
+                <div class="card-panel grey lighten-5 z-depth-1">
+                    <div class="row valign-wrapper info-profile">
+                        <div class="col s12">
+                            <%= error %>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+
             <div id="create_chatroom" >
                 <form class="col s12" method="POST" id="form_create_chatroom" encType="multipart/form-data">
                     <div class="row">
@@ -35,15 +45,21 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <input type="file" name="chatroom_picture" />
+                    <div class="file-field input-field">
+                        <div class="btn">
+                            <span>Chatroom Picture</span>
+                            <input type="file" name="chatroom_picture">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Upload a chatroom picture (this is mandatory)">
+                        </div>
+                    </div>
 
                     <button class="btn waves-effect waves-light" type="submit" id="send_message">
                             Create chat
                     </button>
                 </form>
             </div>
-            <%= error %>
         </main>
     
         <footer class="page-footer">

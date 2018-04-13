@@ -12,7 +12,18 @@
         </header>
         
         <main>
-            <h1>Sign up</h1>    
+            <h1>Sign up</h1>  
+
+            <% if (error != "") { %>
+                <div class="card-panel grey lighten-5 z-depth-1">
+                    <div class="row valign-wrapper info-profile">
+                        <div class="col s12">
+                            <%= error %>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+
             <div class="form_signup row">
                 <form class="col s12" method="POST" encType="multipart/form-data">
                     <div class="row">
@@ -62,7 +73,6 @@
                     </div>
                 </form>
             </div>
-            <%= error %>
         </main>
         
         

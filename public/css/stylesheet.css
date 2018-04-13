@@ -109,7 +109,7 @@ body{
         font-size: 24px;
     }
     #logo{
-        margin-top: 50px;
+        margin-top: 5px;
     }
 }
 
@@ -117,6 +117,7 @@ body{
 .form_login{
     width: 30%;
 }
+
 
 .form_signup{
     width: 50%;
@@ -134,7 +135,7 @@ h1{
 }
 
 @media screen and (max-width: 800px){
-    .form_login_signup{
+    .form_login, .form_signup{
         width: 100%;
     }
 }
@@ -156,6 +157,12 @@ h1{
     margin: 20px;
 }
 
+@media screen and (max-width: 800px){
+    #form_create_chatroom{
+        width: 100%;
+    }
+}
+
 /* ALL CHATROOMS */
 .card{
     width: 30%;
@@ -170,6 +177,12 @@ h1{
     margin: 20px 0px 50px 0px;
 }
 
+@media screen and (max-width: 800px){
+    .card{
+        width: 100%;
+    }
+}
+
 
 /* CHATROOM*/
 #chat-content {
@@ -179,7 +192,6 @@ h1{
 }
 .section_chat{
     overflow: scroll;
-
     height: 350px;
     padding: 20px;
 }
@@ -222,6 +234,12 @@ h1{
     margin: 20px auto;
 }
 
+@media screen and (max-width: 800px){
+    #chat-content{
+        width: 100%;
+    }
+}
+
 /* PROFILE */
 .img-profile{
     width: 100px;
@@ -239,6 +257,12 @@ h1{
 .row.valign-wrapper.btn-profile{
     margin-bottom: 0px;
     flex-direction: column;
+}
+
+@media screen and (max-width: 800px){
+    .profile-content{
+        width: 100%;
+    }
 }
 
 /* EDIT PROFILE */

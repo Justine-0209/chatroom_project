@@ -245,26 +245,30 @@ app.post('/create-chatroom', function(req, res) {
     if (chatroom_title == ""){error = "Please enter a title for your chatroom"}
 
     if (chatroom_decription == ""){error = "Please enter a description for your chatroom"}
-
     if (!req.files){error = 'No files were uploaded.'}
+    
    
     console.log(req.files.chatroom_picture);
     
     if (error == ""){
+        console.log("1");
         // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
         var chatroom_picture=req.files.chatroom_picture;
 
-        if (typeof edit_profile_picture !=="undefined" && edit_profile_picture){
+        if (typeof chatroom_picture !=="undefined" && chatroom_picture){
+            console.log("2");
             var picture_name=req.files.chatroom_picture.name;
             // Use the mv() method to place the file somewhere on your server
             chatroom_picture.mv('public/images/chatroom/'+picture_name, function(err) {
                 if (err){
                     return res.status(500).send(err);
+                    console.log("3");
                 }
                 connection.query(
                     'INSERT INTO chatroom VALUES (NULL, ?, ?, ?, NOW(), ?)',
                     [chatroom_title, chatroom_decription, picture_name, master_user_id],
                     function (err, results, fields) {
+                        console.log("/chatroom?id=" + results.insertId);
                         if(err){throw err;}
                         res.redirect("/chatroom?id=" + results.insertId);
                     }
@@ -272,6 +276,7 @@ app.post('/create-chatroom', function(req, res) {
             })
         }
         else {
+            console.log("5");
             res.render('create-chatroom.ejs', {
                 error:"Missing Picture",
                 connect:""
@@ -279,6 +284,7 @@ app.post('/create-chatroom', function(req, res) {
         }
     }
     else{
+        console.log("6");
         res.render('create-chatroom.ejs', {
             error:error,
             connect:""
@@ -380,7 +386,7 @@ app.get('/chatroom', function(req, res) {
                     function (err, results2, fields) {
                         console.log(results2)
                         if (err) {throw err;}
-                        else if (results2.length>0){
+                        else{
                             res.render('chatroom.ejs', {
                                 results:results2,
                                 chatroom_title:chatroom_title,
